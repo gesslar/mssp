@@ -180,6 +180,20 @@ make test
 
 Runs `go test ./...`.
 
+## Linting
+
+```sh
+make lint
+```
+
+Runs `golangci-lint run ./...` — the same lint gate CI enforces (golangci-lint
+defaults, no config file). A tracked `pre-push` hook runs this automatically, but
+git requires a one-time, per-clone opt-in to activate it:
+
+```sh
+make setup   # run once after cloning; points git at .githooks/
+```
+
 ## Cleaning
 
 ```sh
