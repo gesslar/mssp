@@ -149,6 +149,19 @@ func TestNewConnectionConfig(t *testing.T) {
 	}
 }
 
+func TestConnectionConfigAccessors(t *testing.T) {
+	cfg := NewConnectionConfig("example.com", 4000, 7)
+	if got := cfg.Host(); got != "example.com" {
+		t.Errorf("Host() = %q, want %q", got, "example.com")
+	}
+	if got := cfg.Port(); got != 4000 {
+		t.Errorf("Port() = %d, want %d", got, 4000)
+	}
+	if got := cfg.Timeout(); got != 7 {
+		t.Errorf("Timeout() = %d, want %d", got, 7)
+	}
+}
+
 // startMSSPServer launches a one-shot TCP server that, after the client sends
 // any data, replies with frame wrapped in StartPattern/EndPattern (plus the
 // optional surrounding noise) and closes. It returns the dialable host:port.

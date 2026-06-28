@@ -164,6 +164,7 @@ func main() {
 | Symbol | Description |
 |--------|-------------|
 | `NewConnectionConfig(host string, port int, timeout int) *ConnectionConfig` | Builds the dial config (timeout in seconds). |
+| `(*ConnectionConfig) Host() / Port() / Timeout()` | Read back the configured host, port, and timeout. |
 | `Connect(cfg *ConnectionConfig) (Result, error)` | Dials, requests MSSP, and returns the parsed result. |
 | `ParseMSSP(payload []byte) Result` | Parses a raw MSSP subnegotiation payload — useful if you already have the bytes. |
 | `Result` (`map[string][]string`) | Parsed data. Implements `json.Marshaler` (single value → string, multiple → array) and `fmt.Stringer`. |
