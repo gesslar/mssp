@@ -173,7 +173,7 @@ func Connect(config *ConnectionConfig) (Result, error) {
 		return nil, err
 	}
 
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	_, err = conn.Write(RequestSequence)
 	if err != nil {

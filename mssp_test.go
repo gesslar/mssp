@@ -171,14 +171,14 @@ func startMSSPServer(t *testing.T, prefix, payload, suffix []byte) (string, int)
 	if err != nil {
 		t.Fatalf("listen: %v", err)
 	}
-	t.Cleanup(func() { ln.Close() })
+	t.Cleanup(func() { _ = ln.Close() })
 
 	go func() {
 		conn, err := ln.Accept()
 		if err != nil {
 			return
 		}
-		defer conn.Close()
+		defer func() { _ = conn.Close() }()
 		buf := make([]byte, 64)
 		_ = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
 		_, _ = conn.Read(buf) // wait for the client's RequestSequence
@@ -213,7 +213,7 @@ func TestConnectDialError(t *testing.T) {
 		t.Fatalf("listen: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	_ = ln.Close()
 
 	cfg := NewConnectionConfig("127.0.0.1", port, 1)
 	if _, err := Connect(cfg); err == nil {
