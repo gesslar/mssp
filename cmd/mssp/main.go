@@ -29,12 +29,13 @@ func main() {
 
 	if isZero(*host) || isZero(*port) {
 		if isZero(*host) && !isZero(*port) {
-			fmt.Println("Host is required.")
+			fmt.Fprintf(os.Stderr, "Host is required.\n\n")
 		} else if isZero(*port) && !isZero(*host) {
-			fmt.Println("Port is required.")
+			fmt.Fprintf(os.Stderr, "Port is required.\n\n")
 		} else {
-			fmt.Println("Host and port are required.")
+			fmt.Fprintf(os.Stderr, "Host and port are required.\n\n")
 		}
+		flag.Usage()
 		os.Exit(1)
 	}
 
@@ -42,7 +43,7 @@ func main() {
 
 	result, err := mssp.Connect(config)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -66,7 +67,7 @@ func main() {
 	} else {
 		marshaled, err := json.Marshal(result)
 		if err != nil {
-			fmt.Printf("Error marshaling result: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error marshaling result: %v\n", err)
 			os.Exit(1)
 		}
 
