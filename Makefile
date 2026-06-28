@@ -1,7 +1,6 @@
-# Detect the host OS/arch from the Go toolchain itself, so the build matches
-# whatever `go` would target by default (and respects any GOOS/GOARCH override).
-GOOS   := $(shell go env GOOS)
-GOARCH := $(shell go env GOARCH)
+# Detect the host OS from the Go toolchain (respecting any GOOS override) so we
+# can add the .exe suffix when building for Windows.
+GOOS := $(shell go env GOOS)
 
 BUILD_DIR := build
 BINARY    := mssp
@@ -9,7 +8,7 @@ BINARY    := mssp
 ifeq ($(GOOS),windows)
 	EXT := .exe
 endif
-OUTPUT := $(BUILD_DIR)/$(BINARY)-$(GOOS)-$(GOARCH)$(EXT)
+OUTPUT := $(BUILD_DIR)/$(BINARY)$(EXT)
 
 .PHONY: build test clean
 
