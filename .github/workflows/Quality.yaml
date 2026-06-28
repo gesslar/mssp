@@ -1,0 +1,15 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  Quality:
+    uses: gesslar/Maint/.github/workflows/QualityGo.yaml@main
+    secrets: inherit
+    with:
+      perform_linting: "${{ vars.PERFORM_LINTING || 'no' }}"
+      perform_testing: "${{ vars.PERFORM_TESTING || 'no' }}"
