@@ -1,3 +1,6 @@
+// Command mssp is a one-shot command-line client for the MSSP (Mud Server
+// Status Protocol). It connects to a server, requests its MSSP data, and prints
+// the result as JSON — or, with -value, the value of a single variable.
 package main
 
 import (
@@ -7,6 +10,8 @@ import (
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/gesslar/mssp"
 )
 
 // main parses command-line flags (-host, -port, -value, -timeout), connects to
@@ -33,12 +38,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	var config ConnectionConfig
-	config.host = *host
-	config.port = *port
-	config.timeout = *timeout
+	config := mssp.NewConnectionConfig(*host, *port, *timeout)
 
-	result, err := Connect(&config)
+	result, err := mssp.Connect(config)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
