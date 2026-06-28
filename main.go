@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strings"
 )
 
 // main parses command-line flags (-host, -port, -value, -timeout), connects to
@@ -47,19 +48,13 @@ func main() {
 		if vals, ok := result[*value]; ok {
 			// if it's a single value just print the value, otherwise print the array
 			if len(vals) == 1 {
-				marshaled, err := json.Marshal(vals[0])
-				if err != nil {
-					fmt.Printf("Error marshaling value: %v\n", err)
-					os.Exit(1)
-				}
-				fmt.Printf("%s\n", marshaled)
+				fmt.Println(string(vals[0]))
+			} else if len(vals) > 1 {
+				// Get the marshaled value, but don't include the quotes around the array values.
+				joined := "[" + strings.Join(vals, ", ") + "]"
+				fmt.Println(joined)
 			} else {
-				marshaled, err := json.Marshal(vals)
-				if err != nil {
-					fmt.Printf("Error marshaling value: %v\n", err)
-					os.Exit(1)
-				}
-				fmt.Printf("%s\n", marshaled)
+				os.Exit(0)
 			}
 		} else {
 			os.Exit(0)
@@ -73,7 +68,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		fmt.Printf("%s\n", marshaled)
+		fmt.Println(string(marshaled))
 	}
 }
 
