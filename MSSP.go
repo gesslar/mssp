@@ -198,17 +198,13 @@ func Connect(config *ConnectionConfig) (Result, error) {
 
 		_, after, ok := bytes.Cut(buf, StartPattern)
 		if ok {
-			after := after
-			found := bytes.Contains(after, EndPattern)
-			if found {
-				before, _, ok := bytes.Cut(after, EndPattern)
-				if ok {
-					payload = before
-					// got it, parse payload
-					response := ParseMSSP(payload)
-					result = response
-					break
-				}
+			before, _, ok := bytes.Cut(after, EndPattern)
+			if ok {
+				payload = before
+				// got it, parse payload
+				response := ParseMSSP(payload)
+				result = response
+				break
 			}
 		}
 
