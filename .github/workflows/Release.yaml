@@ -12,3 +12,5 @@ jobs:
     secrets: inherit
     with:
       main_package: "./cmd/mssp"
+    permissions:
+      contents: write
