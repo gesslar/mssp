@@ -19,12 +19,11 @@ can poll them. This tool is a one-shot poller for that data.
 make build
 ```
 
-This builds a host-native binary into `build/`, named for the target platform,
-e.g. `build/mssp-linux-amd64` (or `…-windows-amd64.exe` on Windows). The build
-respects `GOOS`/`GOARCH` overrides, so you can cross-compile:
+This builds a host-native binary into `build/mssp` (or `build/mssp.exe` on
+Windows). The build respects `GOOS`/`GOARCH` overrides, so you can cross-compile:
 
 ```sh
-GOOS=windows GOARCH=amd64 make build   # -> build/mssp-windows-amd64.exe
+GOOS=windows GOARCH=amd64 make build   # -> build/mssp.exe
 ```
 
 Or build/run directly with the Go toolchain without the Makefile:
