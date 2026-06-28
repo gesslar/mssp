@@ -1,5 +1,5 @@
 // Package mssp provides functionality for the MSSP protocol.
-package main
+package mssp
 
 import (
 	"bytes"

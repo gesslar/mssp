@@ -15,7 +15,7 @@ OUTPUT := $(BUILD_DIR)/$(BINARY)-$(GOOS)-$(GOARCH)$(EXT)
 
 # Build for the host platform into build/.
 build:
-	go build -o $(OUTPUT) .
+	go build -o $(OUTPUT) ./cmd/mssp
 	@echo "built $(OUTPUT)"
 
 test:

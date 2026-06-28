@@ -30,8 +30,14 @@ GOOS=windows GOARCH=amd64 make build   # -> build/mssp-windows-amd64.exe
 Or build/run directly with the Go toolchain without the Makefile:
 
 ```sh
-go build -o mssp .
-go run . -host <host> -port <port>
+go build -o mssp ./cmd/mssp
+go run ./cmd/mssp -host <host> -port <port>
+```
+
+Or install the command straight from the module path:
+
+```sh
+go install github.com/gesslar/mssp/cmd/mssp@latest
 ```
 
 ## Usage
@@ -111,6 +117,60 @@ mssp -host slowmud.example -port 4000 -timeout 15
 ### Note
 
 `mssp` assumes that all values are strings per the [MSSP spec](https://tintin.mudhalla.net/protocols/mssp/). Therefore, any singular or array value will be printed without quotes. The JSON value is still quoted, per JSON spec.
+
+## Use as a library
+
+The root package (`github.com/gesslar/mssp`) is importable, so you can poll
+servers from your own Go code instead of shelling out to the binary. The CLI in
+`cmd/mssp` is just a thin wrapper over this same API.
+
+```sh
+go get github.com/gesslar/mssp
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/gesslar/mssp"
+)
+
+func main() {
+	// host, port, timeout (seconds)
+	cfg := mssp.NewConnectionConfig("aardwolf.org", 23, 5)
+
+	result, err := mssp.Connect(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Result is map[string][]string — every variable maps to a slice of
+	// values, even when there's only one. Take the last element for the
+	// effective (override-wins) value.
+	if players, ok := result["PLAYERS"]; ok {
+		fmt.Println("players:", players[len(players)-1])
+	}
+
+	// PORT is commonly a list:
+	fmt.Println("ports:", result["PORT"]) // e.g. [23 80]
+}
+```
+
+### API surface
+
+| Symbol | Description |
+|--------|-------------|
+| `NewConnectionConfig(host string, port int, timeout int) *ConnectionConfig` | Builds the dial config (timeout in seconds). |
+| `Connect(cfg *ConnectionConfig) (Result, error)` | Dials, requests MSSP, and returns the parsed result. |
+| `ParseMSSP(payload []byte) Result` | Parses a raw MSSP subnegotiation payload — useful if you already have the bytes. |
+| `Result` (`map[string][]string`) | Parsed data. Implements `json.Marshaler` (single value → string, multiple → array) and `fmt.Stringer`. |
+
+Because `Result` implements `json.Marshaler`, `json.Marshal(result)` produces
+the same output as the CLI: a variable with one value renders as a string, and
+a variable with several values renders as an array.
 
 ## Testing
 
