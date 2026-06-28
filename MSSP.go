@@ -73,6 +73,10 @@ func (c *ConnectionConfig) Timeout() int { return c.timeout }
 //
 // Each key maps to a slice; callers that want the effective (default) value
 // should take the last element.
+//
+// No IAC-unescaping is performed: the MSSP spec forbids names and values from
+// containing the IAC, NUL, MSSP_VAR, or MSSP_VAL byte, so MSSP_VAR/MSSP_VAL are
+// always delimiters here (never data) and there is no doubled IAC to collapse.
 func ParseMSSP(payload []byte) Result {
 	result := make(Result)
 
@@ -182,7 +186,6 @@ func Connect(config *ConnectionConfig) (Result, error) {
 
 	var buf []byte
 	tmp := make([]byte, 512)
-	var payload []byte
 
 	var result Result
 
@@ -198,12 +201,11 @@ func Connect(config *ConnectionConfig) (Result, error) {
 
 		_, after, ok := bytes.Cut(buf, StartPattern)
 		if ok {
+			// The spec forbids IAC inside names/values, so the first IAC SE after
+			// the payload is always the real terminator — no escaped IAC to skip.
 			before, _, ok := bytes.Cut(after, EndPattern)
 			if ok {
-				payload = before
-				// got it, parse payload
-				response := ParseMSSP(payload)
-				result = response
+				result = ParseMSSP(before)
 				break
 			}
 		}
