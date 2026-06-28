@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run the same lint gate as CI before pushing, so failures surface locally
+# instead of after a round-trip. Activate with `make setup` (one-time per clone).
+exec make lint

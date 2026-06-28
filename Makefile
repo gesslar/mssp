@@ -10,7 +10,7 @@ ifeq ($(GOOS),windows)
 endif
 OUTPUT := $(BUILD_DIR)/$(BINARY)$(EXT)
 
-.PHONY: build test clean
+.PHONY: build test lint setup clean
 
 # Build for the host platform into build/.
 build:
@@ -19,6 +19,15 @@ build:
 
 test:
 	go test ./...
+
+# Run the same linters CI runs (golangci-lint defaults, no config file).
+lint:
+	golangci-lint run ./...
+
+# One-time, per-clone: point git at the tracked hooks in .githooks/.
+setup:
+	git config core.hooksPath .githooks
+	@echo "git hooks activated"
 
 clean:
 	rm -rf $(BUILD_DIR)
