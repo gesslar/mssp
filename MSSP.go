@@ -47,6 +47,15 @@ func NewConnectionConfig(host string, port int, timeout int) *ConnectionConfig {
 	}
 }
 
+// Host returns the host the config will dial.
+func (c *ConnectionConfig) Host() string { return c.host }
+
+// Port returns the port the config will dial.
+func (c *ConnectionConfig) Port() int { return c.port }
+
+// Timeout returns the connection timeout in seconds.
+func (c *ConnectionConfig) Timeout() int { return c.timeout }
+
 // ParseMSSP decodes an MSSP subnegotiation payload (the bytes between
 // IAC SB MSSP and IAC SE) into a map of variable name to its value(s).
 //
