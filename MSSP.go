@@ -177,7 +177,9 @@ func Connect(config *ConnectionConfig) (Result, error) {
 
 	var result Result
 
-	conn.SetReadDeadline(time.Now().Add(time.Duration(config.timeout) * time.Second))
+	if err := conn.SetReadDeadline(time.Now().Add(time.Duration(config.timeout) * time.Second)); err != nil {
+		return nil, err
+	}
 
 	for {
 		n, err := conn.Read(tmp)
