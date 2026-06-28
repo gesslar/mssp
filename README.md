@@ -105,8 +105,12 @@ mssp -host slowmud.example -port 4000 -timeout 15
    `IAC SB MSSP … IAC SE`.
 4. Parses the payload into variable/value pairs, following the MSSP rules:
    - One variable followed by several values is a **list** (e.g.
-     `PORT -> ["23", "80"]`).
+     `PORT -> [23, 80]`).
    - The same variable reported again is an **override** — last one wins.
+
+### Note
+
+`mssp` assumes that all values are strings per the [MSSP spec](https://tintin.mudhalla.net/protocols/mssp/). Therefore, any singular or array value will be printed without quotes. The JSON value is still quoted, per JSON spec.
 
 ## Testing
 
