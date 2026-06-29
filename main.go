@@ -19,7 +19,7 @@ import (
 // resolved from the embedded module build info (see resolveVersion); set it
 // explicitly for release builds with:
 //
-//	go build -ldflags "-X main.version=$(cat VERSION)" .
+//	go build -ldflags "-X main.version=v$(cat VERSION)" .
 var version = ""
 
 // main parses command-line flags (-host, -port, -value, -timeout), connects to
