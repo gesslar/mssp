@@ -24,17 +24,6 @@ This drops a `mssp` binary into `$(go env GOBIN)` (or `$(go env GOPATH)/bin` if
 
 To import it instead of running it, see [Use as a library](#use-as-a-library).
 
-## Install
-
-```sh
-go install github.com/gesslar/mssp@latest
-```
-
-This drops a `mssp` binary into `$(go env GOBIN)` (or `$(go env GOPATH)/bin` if
-`GOBIN` is unset) — put that directory on your `PATH` to run `mssp` from anywhere.
-
-To import it instead of running it, see [Use as a library](#use-as-a-library).
-
 ## Build
 
 ```sh
