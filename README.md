@@ -11,7 +11,18 @@ can poll them. This tool is a one-shot poller for that data.
 
 ## Requirements
 
-- [Go](https://go.dev/) 1.26 or newer (per `go.mod`)
+- [Go](https://go.dev/) 1.18 or newer (per `go.mod`)
+
+## Install
+
+```sh
+go install github.com/gesslar/mssp@latest
+```
+
+This drops a `mssp` binary into `$(go env GOBIN)` (or `$(go env GOPATH)/bin` if
+`GOBIN` is unset) — put that directory on your `PATH` to run `mssp` from anywhere.
+
+To import it instead of running it, see [Use as a library](#use-as-a-library).
 
 ## Install
 
