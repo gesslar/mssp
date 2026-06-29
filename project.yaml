@@ -10,7 +10,7 @@ description: |
   projects rather than relying on shelling out to an executable.
 
   See: [https://tintin.mudhalla.net/protocols/mssp/]
-installation: |+
+installation: |
   Install as a command
 
   `go install github.com/gesslar/mssp@latest`
