@@ -1,0 +1,21 @@
+name: mssp
+version: 0.2.0
+author:
+  name: gesslar
+license: 0BSD
+homepage: https://github.com/gesslar/mssp
+description: |
+  A small CLI utility for polling MSSP information from running MUDs. Included
+  is a utility lib to allow other Go package authors to incorporate into their
+  projects rather than relying on shelling out to an executable.
+
+  See: [https://tintin.mudhalla.net/protocols/mssp/]
+installation: |+
+  Install as a command
+
+  `go install github.com/gesslar/mssp@latest`
+
+  Install into a Go project
+
+  `go get github.com/gesslar/mssp/mssp`
+support: No support available.
