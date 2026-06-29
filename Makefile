@@ -10,12 +10,18 @@ ifeq ($(GOOS),windows)
 endif
 OUTPUT := $(BUILD_DIR)/$(BINARY)$(EXT)
 
+# Stamp the binary with a v-prefixed VERSION file value (falls back to embedded
+# build info if VERSION is missing). Matches the release workflow's `vX.Y.Z` and
+# the tag `go install` reports. Read by `mssp -version`.
+VERSION := $(shell cat VERSION 2>/dev/null)
+LDFLAGS := $(if $(VERSION),-X main.version=v$(VERSION),)
+
 .PHONY: build test lint setup clean
 
 # Build for the host platform into build/.
 build:
-	go build -o $(OUTPUT) ./cmd/mssp
-	@echo "built $(OUTPUT)"
+	go build -ldflags "$(LDFLAGS)" -o $(OUTPUT) .
+	@echo "built $(OUTPUT) (v$(VERSION))"
 
 test:
 	go test ./...

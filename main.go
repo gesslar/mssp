@@ -9,10 +9,18 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"runtime/debug"
 	"strings"
 
-	"github.com/gesslar/mssp"
+	"github.com/gesslar/mssp/mssp"
 )
+
+// version is the build-time version string. It is normally left empty and
+// resolved from the embedded module build info (see resolveVersion); set it
+// explicitly for release builds with:
+//
+//	go build -ldflags "-X main.version=$(cat VERSION)" .
+var version = ""
 
 // main parses command-line flags (-host, -port, -value, -timeout), connects to
 // the server, and prints the MSSP data as JSON. With -value it prints only that
@@ -24,8 +32,14 @@ func main() {
 	port := flag.Int("port", zeroFor[int](), "The port to connect to")
 	value := flag.String("value", zeroFor[string](), "The value to send (optional)")
 	timeout := flag.Int("timeout", 5, "Connection timeout in seconds")
+	showVersion := flag.Bool("version", false, "Print version and exit")
 
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println("mssp", resolveVersion())
+		return
+	}
 
 	if isZero(*host) || isZero(*port) {
 		if isZero(*host) && !isZero(*port) {
@@ -73,6 +87,47 @@ func main() {
 
 		fmt.Println(string(marshaled))
 	}
+}
+
+// resolveVersion reports the binary's version. A build-time override (the
+// package-level version, set via -ldflags) wins. Otherwise it reads the version
+// embedded by the Go toolchain: for `go install <module>@<tag>` this is the
+// module tag (e.g. "v0.1.0"); for a local build it is "(devel)", which we
+// enrich with the short VCS revision (and a +dirty marker for uncommitted work)
+// when that information is available.
+func resolveVersion() string {
+	if version != "" {
+		return version
+	}
+
+	info, ok := debug.ReadBuildInfo()
+	if !ok || info.Main.Version == "" {
+		return "(unknown)"
+	}
+
+	v := info.Main.Version
+	if v != "(devel)" {
+		return v
+	}
+
+	var rev, dirty string
+	for _, s := range info.Settings {
+		switch s.Key {
+		case "vcs.revision":
+			rev = s.Value
+		case "vcs.modified":
+			if s.Value == "true" {
+				dirty = "+dirty"
+			}
+		}
+	}
+	if rev == "" {
+		return v
+	}
+	if len(rev) > 12 {
+		rev = rev[:12]
+	}
+	return fmt.Sprintf("(devel %s%s)", rev, dirty)
 }
 
 // zeroFor returns the zero value for type T. It is handy as a default when
