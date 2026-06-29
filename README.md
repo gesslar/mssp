@@ -13,6 +13,17 @@ can poll them. This tool is a one-shot poller for that data.
 
 - [Go](https://go.dev/) 1.26 or newer (per `go.mod`)
 
+## Install
+
+```sh
+go install github.com/gesslar/mssp@latest
+```
+
+This drops a `mssp` binary into `$(go env GOBIN)` (or `$(go env GOPATH)/bin` if
+`GOBIN` is unset) — put that directory on your `PATH` to run `mssp` from anywhere.
+
+To import it instead of running it, see [Use as a library](#use-as-a-library).
+
 ## Build
 
 ```sh
@@ -29,20 +40,15 @@ GOOS=windows GOARCH=amd64 make build   # -> build/mssp.exe
 Or build/run directly with the Go toolchain without the Makefile:
 
 ```sh
-go build -o mssp ./cmd/mssp
-go run ./cmd/mssp -host <host> -port <port>
-```
-
-Or install the command straight from the module path:
-
-```sh
-go install github.com/gesslar/mssp/cmd/mssp@latest
+go build -o mssp .
+go run . -host <host> -port <port>
 ```
 
 ## Usage
 
 ```sh
 mssp -host <host> -port <port> [-value <variable>] [-timeout <seconds>]
+mssp -version
 ```
 
 ### Flags
@@ -53,6 +59,12 @@ mssp -host <host> -port <port> [-value <variable>] [-timeout <seconds>]
 | `-port`    | int    | —       | Port to connect to. **Required.**                        |
 | `-value`   | string | —       | Print only this MSSP variable's value instead of all.    |
 | `-timeout` | int    | `5`     | Connection timeout in seconds.                           |
+| `-version` | bool   | —       | Print the version and exit.                              |
+
+When installed via `go install …@<tag>`, `-version` reports the module tag (e.g.
+`v0.2.0`) — the Go toolchain embeds it automatically. `make build` stamps the
+`VERSION` file instead, and a plain `go build` reports a dev pseudo-version with
+the commit hash.
 
 `-host` and `-port` are both required; if either is missing the tool prints a
 message and exits with status `1`.
@@ -119,12 +131,13 @@ mssp -host slowmud.example -port 4000 -timeout 15
 
 ## Use as a library
 
-The root package (`github.com/gesslar/mssp`) is importable, so you can poll
-servers from your own Go code instead of shelling out to the binary. The CLI in
-`cmd/mssp` is just a thin wrapper over this same API.
+The `github.com/gesslar/mssp/mssp` package is importable, so you can poll servers
+from your own Go code instead of shelling out to the binary. It's the same package
+the `mssp` command uses to do its polling — the command adds the CLI on top: flag
+parsing, output formatting, and exit codes.
 
 ```sh
-go get github.com/gesslar/mssp
+go get github.com/gesslar/mssp/mssp
 ```
 
 ```go
@@ -134,7 +147,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gesslar/mssp"
+	"github.com/gesslar/mssp/mssp"
 )
 
 func main() {

@@ -1,3 +1,3 @@
 module github.com/gesslar/mssp
 
-go 1.26.4
+go 1.18

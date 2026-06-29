@@ -11,6 +11,7 @@ jobs:
     uses: gesslar/Maint/.github/workflows/ReleaseGo.yaml@main
     secrets: inherit
     with:
-      main_package: "./cmd/mssp"
+      main_package: "."
+      version_ldflag: "main.version"
     permissions:
       contents: write
